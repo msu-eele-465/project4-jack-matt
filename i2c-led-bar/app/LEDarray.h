@@ -15,6 +15,8 @@
 #define LED_PIN7 BIT7    // P5.7
 #define LED_PINS (LED_PIN0 | LED_PIN1 | LED_PIN2 | LED_PIN3 | \
                  LED_PIN4 | LED_PIN5 | LED_PIN6 | LED_PIN7)
+#define LED_DIR P1DIR;
+#define LED_OUT P1OUT;
 
 // Pattern definitions
 typedef enum {

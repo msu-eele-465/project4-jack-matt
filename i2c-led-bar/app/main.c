@@ -1,22 +1,24 @@
 #include <msp430fr2310.h>
 #include <stdbool.h>
 
+#include "heartbeat.h"
+#include "LEDarray.h"
+
 int main(void)
 {
     // Stop watchdog timer
     WDTCTL = WDTPW | WDTHOLD;
 
-    P1OUT &= ~BIT0;
-    P1DIR |= BIT0;
+    heartbeat_init();
+    ledarray_init();
+
+    ledarray_select_pattern(PATTERN_3_IN_OUT);
 
     // Disable low-power mode / GPIO high-impedance
     PM5CTL0 &= ~LOCKLPM5;
 
     while (true)
     {
-        P1OUT ^= BIT0;
 
-        // Delay for 100000*(1/MCLK)=0.1s
-        __delay_cycles(100000);
     }
 }

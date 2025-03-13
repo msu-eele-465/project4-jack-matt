@@ -1,22 +1,28 @@
-#include <msp430fr2310.h>
-#include <stdbool.h>
+#include "intrinsics.h"
+#include "msp430fr2310.h"
+#include "heartbeat.h"
+#include "LCD_driver.h"
 
-int main(void)
-{
-    // Stop watchdog timer
-    WDTCTL = WDTPW | WDTHOLD;
+void enable(){
+  P1OUT |= BIT0;
+  __delay_cycles(1000);
+  P1OUT &= ~BIT0;
+}
 
+
+void main(){
+  WDTCTL = WDTPW | WDTHOLD;    // Stop watchdog timer
+  heartbeat_init();
+  init_lcd();
+
+  // Disable low-power mode / GPIO high-impedance
+  PM5CTL0 &= ~LOCKLPM5;
+
+  lcd_toggle_blink();
+
+  lcd_send_string("Hi Jack/Matt");
+
+  while (1){
     P1OUT &= ~BIT0;
-    P1DIR |= BIT0;
-
-    // Disable low-power mode / GPIO high-impedance
-    PM5CTL0 &= ~LOCKLPM5;
-
-    while (true)
-    {
-        P1OUT ^= BIT0;
-
-        // Delay for 100000*(1/MCLK)=0.1s
-        __delay_cycles(100000);
-    }
+  }
 }
