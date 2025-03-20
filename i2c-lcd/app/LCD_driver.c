@@ -19,6 +19,10 @@ void init_lcd() {
   __delay_cycles(10000);
   lcd_send_command(LCD_CURSOR_ON);
   __delay_cycles(10000);
+  lcd_clear_bottom();
+  __delay_cycles(10000);
+  lcd_clear_top();
+  __delay_cycles(10000);
   lcd_send_command(LCD_CURSOR_LEFT);
   __delay_cycles(10000);
   lcd_send_command(LCD_CLEAR_DISPLAY);

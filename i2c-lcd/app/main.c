@@ -12,13 +12,15 @@ void enable(){
 
 void main(){
   WDTCTL = WDTPW | WDTHOLD;    // Stop watchdog timer
+  // Disable low-power mode / GPIO high-impedance
+  PM5CTL0 &= ~LOCKLPM5;
   heartbeat_init();
   init_lcd();
 
-  // Disable low-power mode / GPIO high-impedance
-  PM5CTL0 &= ~LOCKLPM5;
 
-  lcd_toggle_blink();
+  // lcd_send_command(LCD_CLEAR_DISPLAY);
+  // init_lcd();
+  lcd_send_command(LCD_CURSOR_BLINK);
 
   lcd_send_string("Hi Jack/Matt");
 
