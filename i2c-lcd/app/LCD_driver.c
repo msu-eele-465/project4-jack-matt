@@ -19,6 +19,8 @@ void init_lcd() {
   __delay_cycles(10000);
   lcd_send_command(LCD_CURSOR_ON);
   __delay_cycles(10000);
+  lcd_send_command(LCD_CLEAR_DISPLAY);
+  __delay_cycles(10000);
   lcd_send_command(LCD_CURSOR_LEFT);
   __delay_cycles(10000);
   lcd_send_command(LCD_CLEAR_DISPLAY);
@@ -37,6 +39,7 @@ void lcd_send_command(uint8_t cmd) {
   P1OUT |= BIT0;
   __delay_cycles(1000);
   P1OUT &= ~BIT0;
+  __delay_cycles(1000);
 }
 
 void lcd_send_data(uint8_t data) {
@@ -51,6 +54,7 @@ void lcd_send_data(uint8_t data) {
   P1OUT |= BIT0;
   __delay_cycles(1000);
   P1OUT &= ~BIT0;
+  __delay_cycles(1000);
 }
 
 void lcd_send_string(char *str) {

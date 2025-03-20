@@ -52,14 +52,17 @@ static void init_timer(void) {
 
 void ledarray_init(void) {
     // Configure LED pins as outputs
-    P1DIR |= LED_PINS;
-    P1OUT |= LED_PINS;  // All LEDs off initially
+    P1DIR |= LED_PINSA;
+    P1OUT |= LED_PINSA;  // All LEDs off initially
+    P2DIR |= LED_PINSB;
+    P2OUT |= LED_PINSB;
+    
     
     init_timer();
 }
 
 void ledarray_all_off(void) {
-    P1OUT |= LED_PINS;
+    P1OUT |= LED_PINSA;
     pattern_active = false;
     current_pattern = PATTERN_NONE;
 }
@@ -112,29 +115,49 @@ void ledarray_increase_period(void) {
 
 void ledarray_update(void) {
     if (!pattern_active) return;
+    char pattern;
+    int led_group_a;
+    int led_group_b;
     
     switch (current_pattern) {
         case PATTERN_0_STATIC:
-            P1OUT = (P1OUT & ~LED_PINS) | STATIC_PATTERN;
+            pattern = STATIC_PATTERN;
+            led_group_a = pattern & LED_PINSA;
+            led_group_b = (pattern<<4) & LED_PINSB;
+            P1OUT = led_group_a;
+            P2OUT = led_group_b;
             break;
             
         case PATTERN_1_TOGGLE:
-            P1OUT = (P1OUT & ~LED_PINS) | TOGGLE_PATTERN[pattern_step1];
+            pattern = TOGGLE_PATTERN[pattern_step1];
+            led_group_a = pattern & LED_PINSA;
+            led_group_b = (pattern<<4) & LED_PINSB;
+            P1OUT = led_group_a;
+            P2OUT = led_group_b;
             pattern_step1 = (pattern_step1 + 1) % 2;
             break;
             
         case PATTERN_2_UP_COUNT:
-            P1OUT = (P1OUT & ~LED_PINS) | pattern_step2;
+            pattern = pattern_step2;
+            led_group_a = pattern & LED_PINSA;
+            led_group_b = (pattern<<4) & LED_PINSB;
+            P1OUT = led_group_a;
+            P2OUT = led_group_b;
             pattern_step2 = (pattern_step2 + 1) % 256;
             break;
             
         case PATTERN_3_IN_OUT:
-            P1OUT = (P1OUT & ~LED_PINS) | IN_OUT_PATTERN[pattern_step3];
+            pattern = IN_OUT_PATTERN[pattern_step3];
+            led_group_a = pattern & LED_PINSA;
+            led_group_b = (pattern<<4) & LED_PINSB;
+            P1OUT = led_group_a;
+            P2OUT = led_group_b;
             pattern_step3 = (pattern_step3 + 1) % 6;
             break;
             
         default:
-            P1OUT |= LED_PINS;
+            P1OUT |= LED_PINSA;
+            P2OUT |= LED_PINSB;
             break;
     }
 }

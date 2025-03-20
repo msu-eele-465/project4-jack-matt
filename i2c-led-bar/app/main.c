@@ -12,7 +12,7 @@ int main(void)
     heartbeat_init();
     ledarray_init();
 
-    ledarray_select_pattern(PATTERN_3_IN_OUT);
+    ledarray_select_pattern(PATTERN_2_UP_COUNT);
 
     // Disable low-power mode / GPIO high-impedance
     PM5CTL0 &= ~LOCKLPM5;

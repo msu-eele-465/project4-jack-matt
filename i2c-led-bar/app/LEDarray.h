@@ -7,16 +7,18 @@
 // LED array pins (assuming 8 consecutive pins on Port 5)
 #define LED_PIN0 BIT0    // P5.0
 #define LED_PIN1 BIT1    // P5.1
-#define LED_PIN2 BIT2    // P5.2
-#define LED_PIN3 BIT3    // P5.3
+#define LED_PIN2 BIT6    // P5.2
+#define LED_PIN3 BIT7    // P5.3
 #define LED_PIN4 BIT4    // P5.4
 #define LED_PIN5 BIT5    // P5.5
 #define LED_PIN6 BIT6    // P5.6
 #define LED_PIN7 BIT7    // P5.7
-#define LED_PINS (LED_PIN0 | LED_PIN1 | LED_PIN2 | LED_PIN3 | \
-                 LED_PIN4 | LED_PIN5 | LED_PIN6 | LED_PIN7)
+#define LED_PINSA (LED_PIN0 | LED_PIN1 | LED_PIN4 | LED_PIN5 | LED_PIN6 | LED_PIN7)
+#define LED_PINSB (LED_PIN2 | LED_PIN3)
 #define LED_DIR P1DIR;
 #define LED_OUT P1OUT;
+#define LED_PINA_MASK 0x11110011b;
+#define LED_PINB_MASK 0x11000000b;
 
 // Pattern definitions
 typedef enum {

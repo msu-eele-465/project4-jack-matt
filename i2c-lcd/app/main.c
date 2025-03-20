@@ -18,11 +18,11 @@ void main(){
   // Disable low-power mode / GPIO high-impedance
   PM5CTL0 &= ~LOCKLPM5;
 
-  lcd_toggle_blink();
+  lcd_send_command(LCD_CLEAR_DISPLAY);
+  lcd_send_command(LCD_CURSOR_BLINK);
 
   lcd_send_string("Hi Jack/Matt");
 
   while (1){
-    P1OUT &= ~BIT0;
   }
 }
