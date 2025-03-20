@@ -27,6 +27,10 @@ typedef enum {
     PATTERN_1_TOGGLE = 1,        // Toggle pattern
     PATTERN_2_UP_COUNT = 2,      // Count up
     PATTERN_3_IN_OUT,        // In and out pattern
+    PATTERN_4_DOWN_COUNT,
+    PATTERN_5_RLA,
+    PATTERN_6_RRC,
+    PATTERN_7_FILL,
     NUM_PATTERNS
 } led_pattern_t;
 
