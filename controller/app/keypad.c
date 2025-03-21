@@ -19,20 +19,17 @@ static bool is_unlocked = false;
 static system_state_t current_state = SYSTEM_LOCKED;
 
 void keypad_init(void) {
-  // Configure LED pin as output
-  P1DIR |= LED_PIN;
-  LED_PORT &= ~LED_PIN; // LED off initially
 
   rgb_init();
 
   // Configure row pins as outputs
-  P4DIR |= ROW_PINS;
-  P4OUT &= ~ROW_PINS; // Set rows low initially
+  P2DIR |= ROW_PINS;
+  P2OUT &= ~ROW_PINS; // Set rows low initially
 
   // Configure column pins as inputs with pull-up resistors
-  P6DIR &= ~COL_PINS;
-  P6REN |= COL_PINS; // Enable pull-up/down resistors
-  P6OUT &= ~COL_PINS; // Set pull-down
+  P3DIR &= ~COL_PINS;
+  P3REN |= COL_PINS; // Enable pull-up/down resistors
+  P3OUT &= ~COL_PINS; // Set pull-down
 
   //rgb_set_color(0, 0, 0);
   return;
@@ -85,10 +82,10 @@ char keypad_scan(void) {
   else if (key && is_unlocked){
     switch(key){
       case 'A':
-        ledarray_decrease_period();
+        // ledarray_decrease_period();
         break;
       case 'B':
-        ledarray_increase_period();
+        // ledarray_increase_period();
         break;
       case 'D':
         entered_code[0] = 'G';
