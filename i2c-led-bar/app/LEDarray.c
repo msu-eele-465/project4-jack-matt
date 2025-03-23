@@ -1,4 +1,5 @@
 #include "LEDarray.h"
+#include "msp430fr2310.h"
 #include <msp430.h>
 
 // Pattern timing control
@@ -51,14 +52,14 @@ static void init_timer(void) {
 
 void ledarray_init(void) {
     // Configure LED pins as outputs
-    P3DIR |= LED_PINS;
-    P3OUT |= LED_PINS;  // All LEDs off initially
+    P1DIR |= LED_PINS;
+    P1OUT |= LED_PINS;  // All LEDs off initially
     
     init_timer();
 }
 
 void ledarray_all_off(void) {
-    P3OUT |= LED_PINS;
+    P1OUT |= LED_PINS;
     pattern_active = false;
     current_pattern = PATTERN_NONE;
 }
@@ -114,26 +115,26 @@ void ledarray_update(void) {
     
     switch (current_pattern) {
         case PATTERN_0_STATIC:
-            P3OUT = (P3OUT & ~LED_PINS) | STATIC_PATTERN;
+            P1OUT = (P1OUT & ~LED_PINS) | STATIC_PATTERN;
             break;
             
         case PATTERN_1_TOGGLE:
-            P3OUT = (P3OUT & ~LED_PINS) | TOGGLE_PATTERN[pattern_step1];
+            P1OUT = (P1OUT & ~LED_PINS) | TOGGLE_PATTERN[pattern_step1];
             pattern_step1 = (pattern_step1 + 1) % 2;
             break;
             
         case PATTERN_2_UP_COUNT:
-            P3OUT = (P3OUT & ~LED_PINS) | pattern_step2;
+            P1OUT = (P1OUT & ~LED_PINS) | pattern_step2;
             pattern_step2 = (pattern_step2 + 1) % 256;
             break;
             
         case PATTERN_3_IN_OUT:
-            P3OUT = (P3OUT & ~LED_PINS) | IN_OUT_PATTERN[pattern_step3];
+            P1OUT = (P1OUT & ~LED_PINS) | IN_OUT_PATTERN[pattern_step3];
             pattern_step3 = (pattern_step3 + 1) % 6;
             break;
             
         default:
-            P3OUT |= LED_PINS;
+            P1OUT |= LED_PINS;
             break;
     }
 }
