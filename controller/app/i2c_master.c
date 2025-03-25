@@ -42,9 +42,19 @@ void i2c_master_transmit(char* packet){
     UCB0TBCNT = sizeof(Packet);
     UCB0CTLW0 |= UCTR;          // Tx mode
     UCB0CTLW0 |= UCTXSTT;       // Start condition
-    while ((UCB0IFG & UCSTPIFG) == 0) 
-        __delay_cycles(100);    // wait for STOP
+    // while ((UCB0IFG & UCSTPIFG) == 0) 
+    //     __delay_cycles(100);    // wait for STOP
+    __delay_cycles(1000000);
     UCB0IFG &= ~UCSTPIFG;       // Clear STOP flag
+
+    // Tx for initialization
+    UCB0CTLW0 |= UCTR;      // Tx mode
+
+    for(i=0; i<sizeof(Packet); i++){
+        UCB0CTLW0 |= UCTXSTT;   // Start condition
+        while((UCB0IFG & UCSTPIFG)==0);     // Loop till stop
+        UCB0IFG &= ~UCSTPIFG;               // Clear flag
+    }
 }
 
 // -- START I2C ISR --
@@ -65,7 +75,7 @@ __interrupt void EUSCI_B0_I2C_ISR(void){
                 break;
             default:
                 break;
-        }
+        }UCB0CTLW0 = UCSWRST; // Put eUSCI in reset
     }
 }
 // -- END I2C ISR --
