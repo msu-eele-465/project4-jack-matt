@@ -13,10 +13,11 @@ int main(void)
     PM5CTL0 &= ~LOCKLPM5;
     // heartbeat_init();
     // keypad_init();
-    i2c_master_transmit("hi");
+    i2c_master_transmit(0x68, "hi");
 
     while(1) {
         // Main loop
         //keypad_scan();
+        i2c_master_transmit(0x40, "hi");
     }
 }

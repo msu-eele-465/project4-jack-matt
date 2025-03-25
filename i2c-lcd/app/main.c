@@ -13,9 +13,9 @@ void enable(){
 
 void main(){
   WDTCTL = WDTPW | WDTHOLD;    // Stop watchdog timer
+  i2c_slave_init();
   // Disable low-power mode / GPIO high-impedance
   PM5CTL0 &= ~LOCKLPM5;
-  i2c_slave_init();
   heartbeat_init();
   init_lcd();
 
