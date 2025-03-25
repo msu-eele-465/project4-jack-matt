@@ -7,16 +7,16 @@
 int main(void)
 {
     WDTCTL = WDTPW | WDTHOLD;    // Stop watchdog timer
+    i2c_master_init();
 
     // Disable low-power mode / GPIO high-impedance
     PM5CTL0 &= ~LOCKLPM5;
-    i2c_master_init();
-    heartbeat_init();
-    keypad_init();
+    // heartbeat_init();
+    // keypad_init();
     i2c_master_transmit("hi");
 
     while(1) {
         // Main loop
-        keypad_scan();
+        //keypad_scan();
     }
 }

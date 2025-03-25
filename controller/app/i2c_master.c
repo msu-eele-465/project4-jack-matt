@@ -10,17 +10,19 @@ int Out_Cnt = 0;
 char Packet[] = {0x03, 0x0, 0x10, 0x13, 0x01, 0x03, 0x05, 0x24};
 
 void i2c_master_init(){
-    __disable_interrupt();
+    UCB0CTLW0 |= UCSWRST;
+    // __disable_interrupt();
     // configure eUSCI_B0 -----------------------------------------------
-    // UCB0CTLW0 |= UCSSEL_3;      // Choose BRCLK=SMCLK=1MHz
+    UCB0CTLW0 |= UCSSEL_3;      // Choose BRCLK=SMCLK=1MHz
     // UCB0BRW = 10;               // Divide BRCLK by 10 for SCL=100kHz
 
     UCB0CTLW0 |= UCMODE_3;      // Put into I2C mode
     UCB0CTLW0 |= UCMST;         // Put into master mode
+    UCB0CTLW0 |= UCTR;          // Tx mode
     UCB0I2CSA = 0x0068;         // Slave address = 0x1101000b
 
-    UCB0CTLW1 |= UCASTP_2;      // Send 1 byte of data
-    UCB0TBCNT = sizeof(Packet); // Auto Stop when UCB0TBCNT reached
+    UCB0CTLW1 |= UCASTP_2;      // Enabling auto stop
+    // UCB0TBCNT = sizeof(Packet); // Auto Stop when UCB0TBCNT reached
 
     //configure ports
     P1SEL1 &= ~BIT3;            // we want P1.3 = SCL
@@ -29,6 +31,7 @@ void i2c_master_init(){
     P1SEL1 &= ~BIT2;            // we want P1.2 = SDA
     P1SEL0 |= BIT2;
 
+    PM5CTL0 &= ~LOCKLPM5;
     UCB0CTLW0 &= ~UCSWRST;
 
     UCB0IE |= UCTXIE0;          // Enable Tx interrupt
@@ -52,21 +55,22 @@ void i2c_master_transmit(char* packet){
 #pragma vector=EUSCI_B0_VECTOR
 __interrupt void EUSCI_B0_I2C_ISR(void){
 
-    if(Data_Cnt<(8)){                   // if first time in interrupt
+    // if(Data_Cnt<(8)){                   // if first time in interrupt
+        __delay_cycles(30);
         UCB0TXBUF = 0x03;  // transmit each value in packet
-        Data_Cnt++;
-    }else{
-        switch(UCB0IV){
-            case 0x16:              // ID 16: RXIFG0 asserts after from slave
-                Data_In[Out_Cnt] = UCB0RXBUF;    //receive data and store in Data_In
-                Out_Cnt++;
-                break;
-            case 0x18:              // ID 18: TXIFG0 asserts when register val can be sent
-                UCB0TXBUF = 0x03;   // register address
-                break;
-            default:
-                break;
-        }//UCB0CTLW0 = UCSWRST; // Put eUSCI in reset
-    }
+        // Data_Cnt++;
+    // }else{
+    //     switch(UCB0IV){
+    //         case 0x16:              // ID 16: RXIFG0 asserts after from slave
+    //             Data_In[Out_Cnt] = UCB0RXBUF;    //receive data and store in Data_In
+    //             Out_Cnt++;
+    //             break;
+    //         case 0x18:              // ID 18: TXIFG0 asserts when register val can be sent
+    //             UCB0TXBUF = 0x03;   // register address
+    //             break;
+    //         default:
+    //             break;
+    //     }
+    // }
 }
 // -- END I2C ISR --
