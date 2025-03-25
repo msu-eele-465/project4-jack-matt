@@ -39,30 +39,21 @@ void i2c_master_init(){
 void i2c_master_transmit(char* packet){
     // -- Send starting register --
     UCB0I2CSA = 0x0068;         // Slave address = 0x0101000b
-    UCB0TBCNT = sizeof(Packet);
+    UCB0TBCNT = 1;
     UCB0CTLW0 |= UCTR;          // Tx mode
     UCB0CTLW0 |= UCTXSTT;       // Start condition
     // while ((UCB0IFG & UCSTPIFG) == 0) 
     //     __delay_cycles(100);    // wait for STOP
     __delay_cycles(1000000);
-    UCB0IFG &= ~UCSTPIFG;       // Clear STOP flag
-
-    // Tx for initialization
-    UCB0CTLW0 |= UCTR;      // Tx mode
-
-    for(i=0; i<sizeof(Packet); i++){
-        UCB0CTLW0 |= UCTXSTT;   // Start condition
-        while((UCB0IFG & UCSTPIFG)==0);     // Loop till stop
-        UCB0IFG &= ~UCSTPIFG;               // Clear flag
-    }
+    // UCB0IFG &= ~UCSTPIFG;       // Clear STOP flag
 }
 
 // -- START I2C ISR --
 #pragma vector=EUSCI_B0_VECTOR
 __interrupt void EUSCI_B0_I2C_ISR(void){
 
-    if(Data_Cnt<(sizeof(Packet)-1)){                   // if first time in interrupt
-        UCB0TXBUF = Packet[Data_Cnt];  // transmit each value in packet
+    if(Data_Cnt<(8)){                   // if first time in interrupt
+        UCB0TXBUF = 0x03;  // transmit each value in packet
         Data_Cnt++;
     }else{
         switch(UCB0IV){
@@ -75,7 +66,7 @@ __interrupt void EUSCI_B0_I2C_ISR(void){
                 break;
             default:
                 break;
-        }UCB0CTLW0 = UCSWRST; // Put eUSCI in reset
+        }//UCB0CTLW0 = UCSWRST; // Put eUSCI in reset
     }
 }
 // -- END I2C ISR --
