@@ -2,8 +2,8 @@
 #include "heartbeat.h"
 
 void heartbeat_init(void) {
-  P6DIR |= BIT6; // configure LED2
-  P6OUT &= ~BIT6;
+  P1DIR |= BIT6; // configure LED2
+  P1OUT &= ~BIT6;
 
 
   //-- SETUP TIMER -------------------------------------------------------
@@ -31,7 +31,7 @@ void heartbeat_init(void) {
 
 void heartbeat_run(void) {
   // flip the P6.6 bit to alternate the LED on/off
-  P6OUT ^= BIT6;
+  P1OUT ^= BIT6;
   return;
 }
 

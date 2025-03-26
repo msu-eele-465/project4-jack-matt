@@ -2,6 +2,7 @@
 #include "msp430fr2310.h"
 #include "heartbeat.h"
 #include "LCD_driver.h"
+#include "i2c_slave.h"
 
 void enable(){
   P1OUT |= BIT0;
@@ -12,6 +13,7 @@ void enable(){
 
 void main(){
   WDTCTL = WDTPW | WDTHOLD;    // Stop watchdog timer
+  i2c_slave_init();
   // Disable low-power mode / GPIO high-impedance
   PM5CTL0 &= ~LOCKLPM5;
   heartbeat_init();
