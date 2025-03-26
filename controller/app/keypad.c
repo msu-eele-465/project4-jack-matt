@@ -94,15 +94,12 @@ char keypad_scan(void) {
         break;
       case '1':
         // ledarray_select_pattern(PATTERN_1_TOGGLE);
-        break;check_unlock();
         break;
       case '2':
         // ledarray_select_pattern(PATTERN_2_UP_COUNT);
-        break;check_unlock();
         break;
       case '3':
         // ledarray_select_pattern(PATTERN_3_IN_OUT);
-        break;check_unlock();
         break;
       case '0':
         // ledarray_select_pattern(PATTERN_0_STATIC);

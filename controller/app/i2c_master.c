@@ -14,7 +14,7 @@ void i2c_master_init(){
     // __disable_interrupt();
     // configure eUSCI_B0 -----------------------------------------------
     UCB0CTLW0 |= UCSSEL_3;      // Choose BRCLK=SMCLK=1MHz
-    // UCB0BRW = 10;               // Divide BRCLK by 10 for SCL=100kHz
+    UCB0BRW = 10;               // Divide BRCLK by 10 for SCL=100kHz
 
     UCB0CTLW0 |= UCMODE_3;      // Put into I2C mode
     UCB0CTLW0 |= UCMST;         // Put into master mode
@@ -39,10 +39,11 @@ void i2c_master_init(){
     __enable_interrupt();       // Enable Maskable IRQs
 }
 
-void i2c_master_transmit(int address, char* packet){
+void i2c_master_transmit(int address, char packet[]){
     // -- Send starting register --
     UCB0I2CSA = address;         // Slave address
-    UCB0TBCNT = sizeof(packet);
+    Packet[0] = packet[0];
+    UCB0TBCNT = 1;
     UCB0CTLW0 |= UCTR;          // Tx mode
     UCB0CTLW0 |= UCTXSTT;       // Start condition
     while ((UCB0IFG & UCSTPIFG) == 0) 
@@ -55,10 +56,11 @@ void i2c_master_transmit(int address, char* packet){
 #pragma vector=EUSCI_B0_VECTOR
 __interrupt void EUSCI_B0_I2C_ISR(void){
 
-    if(Data_Cnt<(8)){                   // if first time in interrupt
+    if(Data_Cnt<(1)){                   // if first time in interrupt
         __delay_cycles(30);
         UCB0TXBUF = Packet[Data_Cnt];  // transmit each value in packet
         Data_Cnt++;
+        if(Data_Cnt==1) Data_Cnt=0;
     }else{
         switch(UCB0IV){
             case 0x16:              // ID 16: RXIFG0 asserts after from slave

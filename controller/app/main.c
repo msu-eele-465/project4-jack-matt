@@ -11,13 +11,20 @@ int main(void)
 
     // Disable low-power mode / GPIO high-impedance
     PM5CTL0 &= ~LOCKLPM5;
-    // heartbeat_init();
-    // keypad_init();
-    i2c_master_transmit(0x68, "hi");
-
+    heartbeat_init();
+    keypad_init();
+    // i2c_master_transmit(0x68, "hi");
+    char previous = " ";
+    char keypressed = " ";
     while(1) {
         // Main loop
-        //keypad_scan();
-        i2c_master_transmit(0x40, "hi");
+        keypressed = keypad_scan();
+        if (keypressed != previous && keypressed != 0){
+            switch(keypressed){
+                case '1':
+                    i2c_master_transmit(0x40, "Happy Days!");
+                    break;
+            }
+        }
     }
 }
