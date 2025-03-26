@@ -20,6 +20,8 @@ void main(){
   init_lcd();
 
 
+
+  lcd_send_command(LCD_CLEAR_DISPLAY);
   // lcd_send_command(LCD_CLEAR_DISPLAY);
   // init_lcd();
   lcd_send_command(LCD_CURSOR_BLINK);
