@@ -36,7 +36,6 @@ __interrupt void EUSCI_B0_I2C_ISR(void){
     switch(UCB0IV){
         case 0x16:              // ID 16: RXIFG0 asserts after from slave
             Datum_In = UCB0RXBUF;    //receive data and store in Data_In
-            // lcd_send_data(Datum_In);
             ledarray_set_pattern(Datum_In);
             switch(Datum_In){
                 case '0':
@@ -60,6 +59,7 @@ __interrupt void EUSCI_B0_I2C_ISR(void){
                 case '6':
                     ledarray_select_pattern(PATTERN_6_RRC);
                     break;
+                // *Note* ran out of memory
                 // case '7':
                 //     ledarray_select_pattern(PATTERN_7_FILL);
                 //     break;

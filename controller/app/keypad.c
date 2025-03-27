@@ -31,7 +31,6 @@ void keypad_init(void) {
   P3REN |= COL_PINS; // Enable pull-up/down resistors
   P3OUT &= ~COL_PINS; // Set pull-down
 
-  //rgb_set_color(0, 0, 0);
   return;
 }
 
@@ -79,32 +78,10 @@ char keypad_scan(void) {
       keypad_check_unlock();
     }
   }
-  else if (key && is_unlocked){
-    switch(key){
-      case 'A':
-        // ledarray_decrease_period();
-        break;
-      case 'B':
-        // ledarray_increase_period();
-        break;
-      case 'D':
-        entered_code[0] = 'G';
-        is_unlocked=false;
-        keypad_check_unlock();
-        break;
-      case '1':
-        // ledarray_select_pattern(PATTERN_1_TOGGLE);
-        break;
-      case '2':
-        // ledarray_select_pattern(PATTERN_2_UP_COUNT);
-        break;
-      case '3':
-        // ledarray_select_pattern(PATTERN_3_IN_OUT);
-        break;
-      case '0':
-        // ledarray_select_pattern(PATTERN_0_STATIC);
-        break;
-    }
+  else if (key && is_unlocked && key == 'D'){
+    entered_code[0] = 'G';
+    is_unlocked=false;
+    keypad_check_unlock();
   }
 
   return key;

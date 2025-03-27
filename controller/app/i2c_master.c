@@ -11,7 +11,6 @@ char Packet[] = {0x03, 0x0, 0x10, 0x13, 0x01, 0x03, 0x05, 0x24};
 
 void i2c_master_init(){
     UCB0CTLW0 |= UCSWRST;
-    // __disable_interrupt();
     // configure eUSCI_B0 -----------------------------------------------
     UCB0CTLW0 |= UCSSEL_3;      // Choose BRCLK=SMCLK=1MHz
     UCB0BRW = 10;               // Divide BRCLK by 10 for SCL=100kHz
@@ -22,7 +21,6 @@ void i2c_master_init(){
     UCB0I2CSA = 0x0068;         // Slave address = 0x1101000b
 
     UCB0CTLW1 |= UCASTP_2;      // Enabling auto stop
-    // UCB0TBCNT = sizeof(Packet); // Auto Stop when UCB0TBCNT reached
 
     //configure ports
     P1SEL1 &= ~BIT3;            // we want P1.3 = SCL
@@ -48,7 +46,6 @@ void i2c_master_transmit(int address, char packet[]){
     UCB0CTLW0 |= UCTXSTT;       // Start condition
     while ((UCB0IFG & UCSTPIFG) == 0) 
         __delay_cycles(100);    // wait for STOP
-    // __delay_cycles(1000000);
     UCB0IFG &= ~UCSTPIFG;       // Clear STOP flag
 }
 

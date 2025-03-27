@@ -87,6 +87,7 @@ void ledarray_select_pattern(led_pattern_t pattern) {
             case PATTERN_6_RRC:
                 pattern_step6 = 128;
                 break;
+            // *Note* ran out of memory
             // case PATTERN_7_FILL:
             //     pattern_step6 = 1;
             //     break;
@@ -180,6 +181,7 @@ void ledarray_update(void) {
                 pattern_step6 = 128;
             break;
 
+        // *Note* Commented out for the sake of memory (ran out)
         // case PATTERN_7_FILL:
         //     ledarray_set_pattern(pattern_step7);
         //     if (pattern_count7==8)
