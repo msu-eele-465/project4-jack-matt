@@ -13,7 +13,7 @@ static unsigned int pattern_step7 = 1;
 static unsigned int pattern_count7 = 1;
 
 static led_pattern_t current_pattern = PATTERN_NONE;
-static bool pattern_active = false;
+static int pattern_active = 0;
 
 // Pattern definitions
 static const unsigned char STATIC_PATTERN = 0xAA;  // 10101010
@@ -58,18 +58,12 @@ static void init_timer(void) {
 void ledarray_init(void) {
     // Configure LED pins as outputs
     P1DIR |= LED_PINSA;
-    P1OUT |= LED_PINSA;  // All LEDs off initially
+    P1OUT &= ~LED_PINSA;  // All LEDs off initially
     P2DIR |= LED_PINSB;
-    P2OUT |= LED_PINSB;
+    P2OUT &= ~LED_PINSB;
     
     
     init_timer();
-}
-
-void ledarray_all_off(void) {
-    P1OUT |= LED_PINSA;
-    pattern_active = false;
-    current_pattern = PATTERN_NONE;
 }
 
 void ledarray_select_pattern(led_pattern_t pattern) {
@@ -93,14 +87,14 @@ void ledarray_select_pattern(led_pattern_t pattern) {
             case PATTERN_6_RRC:
                 pattern_step6 = 128;
                 break;
-            case PATTERN_7_FILL:
-                pattern_step6 = 1;
-                break;
+            // case PATTERN_7_FILL:
+            //     pattern_step6 = 1;
+            //     break;
         }
     } else {
         current_pattern = pattern;
     }
-    pattern_active = true;
+    pattern_active = 1;
 }
 
 void ledarray_set_transition_period(float period) {
@@ -135,8 +129,10 @@ void ledarray_set_pattern(int pattern){
     int led_group_b;
     led_group_a = pattern & LED_PINSA;
     led_group_b = (pattern<<4) & LED_PINSB;
-    P1OUT = led_group_a;
-    P2OUT = led_group_b;
+    P1OUT &= ~ LED_PINSA;
+    P2OUT &= ~ LED_PINSB;
+    P1OUT |= led_group_a;
+    P2OUT |= led_group_b;
 }
 
 void ledarray_update(void) {
@@ -180,26 +176,26 @@ void ledarray_update(void) {
         case PATTERN_6_RRC:
             ledarray_set_pattern(~pattern_step6);
             pattern_step6 = (pattern_step6 >> 1);
-            if (pattern_step6==1)
+            if (pattern_step6==0)
                 pattern_step6 = 128;
             break;
 
-        case PATTERN_7_FILL:
-            ledarray_set_pattern(pattern_step7);
-            if (pattern_count7==8)
-                pattern_count7 = 0;
-            pattern_step7 = 2;
-            int i;
-            for (i = 0; i<pattern_count7; i++){
-                pattern_step7 *= 2;
-            }
-            pattern_step7--;
-            pattern_count7++;
-            break;
+        // case PATTERN_7_FILL:
+        //     ledarray_set_pattern(pattern_step7);
+        //     if (pattern_count7==8)
+        //         pattern_count7 = 0;
+        //     pattern_step7 = 2;
+        //     int i;
+        //     for (i = 0; i<pattern_count7; i++){
+        //         pattern_step7 *= 2;
+        //     }
+        //     pattern_step7--;
+        //     pattern_count7++;
+        //     break;
             
         default:
-            P1OUT |= LED_PINSA;
-            P2OUT |= LED_PINSB;
+            P1OUT &= ~LED_PINSA;
+            P2OUT &= ~LED_PINSB;
             break;
     }
 }

@@ -2,7 +2,6 @@
 #define LEDARRAY_H_
 
 #include <msp430.h>
-#include <stdbool.h>
 
 // LED array pins (assuming 8 consecutive pins on Port 5)
 #define LED_PIN0 BIT0    // P5.0
@@ -26,16 +25,17 @@ typedef enum {
     PATTERN_0_STATIC = 0,    // 10101010 static
     PATTERN_1_TOGGLE = 1,        // Toggle pattern
     PATTERN_2_UP_COUNT = 2,      // Count up
-    PATTERN_3_IN_OUT,        // In and out pattern
-    PATTERN_4_DOWN_COUNT,
-    PATTERN_5_RLA,
-    PATTERN_6_RRC,
-    PATTERN_7_FILL,
+    PATTERN_3_IN_OUT = 3,        // In and out pattern
+    PATTERN_4_DOWN_COUNT = 4,
+    PATTERN_5_RLA = 5,
+    PATTERN_6_RRC = 6,
+    PATTERN_7_FILL = 7,
     NUM_PATTERNS
 } led_pattern_t;
 
 // Function prototypes
 void ledarray_init(void);
+void ledarray_set_pattern(int pattern);
 void ledarray_update(void);
 void ledarray_select_pattern(led_pattern_t pattern);
 void ledarray_all_off(void);
