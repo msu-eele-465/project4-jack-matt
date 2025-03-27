@@ -1,12 +1,5 @@
+# MSP430 I2C System Architecture
 
-# Project4
-## Main Flowchart
-![Alt text](Flowcharts/LCD-MAIN.drawio.svg)
-
-## Circuit Diagram
-![Alt text](Project4_CircuitDiagram.drawio.svg)
-
-## Software architecture
 ```mermaid
 graph TB
     subgraph "Main Controller (MSP430FR2355)"

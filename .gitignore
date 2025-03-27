@@ -42,6 +42,9 @@
 *.idb
 *.pdb
 
+# Flowchart-Backups
+*.drawio.bkp
+
 
 # Code Composer Studio files
 # https://downloads.ti.com/ccs/esd/documents/users_guide_ccs_20.0.0/ccs_project-management2.html#files-to-check-in
