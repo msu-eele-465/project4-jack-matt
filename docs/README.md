@@ -1,5 +1,8 @@
 
 # Project4
+## Main Flowchart
+![Alt text](Flowcharts/LCD-MAIN.drawio.svg)
+
 ## Circuit Diagram
 ![Alt text](Project4_CircuitDiagram.drawio.svg)
 
