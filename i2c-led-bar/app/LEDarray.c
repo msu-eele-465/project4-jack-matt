@@ -40,13 +40,8 @@ static void init_timer(void) {
     TB0CTL |= MC__UP;
     TB0CTL |= CNTL_0;
 
-    // 15/513 = 0.029239766
-    // 0.029239766÷(0.000001×7) = 4177.109428571
-    // 2.5/513 = 0.004873294
-    // 0.004873294/(.000001*7) = 696.184857143
     TB0CCR0 = 65535;
 
-    //TB1CTL |= ID__4;          // setting divider D1
     TB0EX0 |= TBIDEX__7;        // setting divider D2
 
     TB0CCTL0 |= CCIE;           // Clear ISR flag
