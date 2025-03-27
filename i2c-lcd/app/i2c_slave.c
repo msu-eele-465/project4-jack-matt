@@ -39,17 +39,6 @@ void i2c_slave_init(){
     UCB0CTLW0 &= ~UCTR;         // Rx mode
 }
 
-void i2c_slave_receive(){
-    // -- Send starting register --
-    // UCB0I2CSA = 0x0068;         // Slave address = 0x1101000b
-    // UCB0TBCNT = sizeof(Packet);
-    // UCB0CTLW0 |= UCTR;          // Tx mode
-    // UCB0CTLW0 |= UCTXSTT;       // Start condition
-    // while ((UCB0IFG & UCSTPIFG) == 0) 
-    //     __delay_cycles(100);    // wait for STOP
-    // UCB0IFG &= ~UCSTPIFG;       // Clear STOP flag
-}
-
 // -- START I2C ISR --
 #pragma vector=EUSCI_B0_VECTOR
 __interrupt void EUSCI_B0_I2C_ISR(void){
@@ -83,6 +72,12 @@ __interrupt void EUSCI_B0_I2C_ISR(void){
                     break;
                 case '7':
                     lcd_send_string("Fill");
+                    break;
+                case '9':
+                    lcd_toggle_blink();
+                    break;
+                case 'C':
+                    lcd_toggle_cursor();
                     break;
                 case 'D':
                     break;

@@ -1,17 +1,9 @@
-#include "app/heartbeat.h"
-#include "intrinsics.h"
+#include "heartbeat.h"
 #include "msp430fr2310.h"
 #include "i2c_slave.h"
 #include "LEDarray.h"
-#include <msp430.h>
 
-int start = 0;
-int i, j;
-char Data_In[] = "eee";
 char Datum_In = '0';
-int Data_Cnt = 0;
-int Out_Cnt = 0;
-char Packet[] = {0x03, 0x0, 0x10, 0x13, 0x01, 0x03, 0x05, 0x24};
 
 void i2c_slave_init(){
     __disable_interrupt();
@@ -21,7 +13,6 @@ void i2c_slave_init(){
     UCB0I2COA0 = 0x42 | UCOAEN;             // Slave address = 0x1101000b
 
     UCB0CTLW1 |= UCASTP_2;                  // Enable AutoStop
-    UCB0TBCNT = sizeof(Packet);             // Auto Stop when UCB0TBCNT reached
 
     //configure ports
     P1SEL1 &= ~BIT3;            // we want P1.3 = SCL
@@ -39,17 +30,6 @@ void i2c_slave_init(){
     UCB0CTLW0 &= ~UCTR;         // Rx mode
 }
 
-void i2c_slave_receive(){
-    // -- Send starting register --
-    // UCB0I2CSA = 0x0068;         // Slave address = 0x1101000b
-    // UCB0TBCNT = sizeof(Packet);
-    // UCB0CTLW0 |= UCTR;          // Tx mode
-    // UCB0CTLW0 |= UCTXSTT;       // Start condition
-    // while ((UCB0IFG & UCSTPIFG) == 0) 
-    //     __delay_cycles(100);    // wait for STOP
-    // UCB0IFG &= ~UCSTPIFG;       // Clear STOP flag
-}
-
 // -- START I2C ISR --
 #pragma vector=EUSCI_B0_VECTOR
 __interrupt void EUSCI_B0_I2C_ISR(void){
@@ -59,6 +39,9 @@ __interrupt void EUSCI_B0_I2C_ISR(void){
             // lcd_send_data(Datum_In);
             ledarray_set_pattern(Datum_In);
             switch(Datum_In){
+                case '0':
+                    ledarray_select_pattern(PATTERN_0_STATIC);
+                    break;
                 case '1':
                     ledarray_select_pattern(PATTERN_1_TOGGLE);
                     break;
@@ -77,11 +60,17 @@ __interrupt void EUSCI_B0_I2C_ISR(void){
                 case '6':
                     ledarray_select_pattern(PATTERN_6_RRC);
                     break;
-                case '7':
-                    ledarray_select_pattern(PATTERN_7_FILL);
-                    break;
+                // case '7':
+                //     ledarray_select_pattern(PATTERN_7_FILL);
+                //     break;
                 case 'D':
                     ledarray_select_pattern(PATTERN_NONE);
+                    break;
+                case 'A':
+                    ledarray_decrease_period();
+                    break;
+                case 'B':
+                    ledarray_increase_period();
                     break;
             }
             heartbeat_run();

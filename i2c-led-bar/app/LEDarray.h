@@ -2,7 +2,6 @@
 #define LEDARRAY_H_
 
 #include <msp430.h>
-#include <stdbool.h>
 
 // LED array pins (assuming 8 consecutive pins on Port 5)
 #define LED_PIN0 BIT0    // P5.0
