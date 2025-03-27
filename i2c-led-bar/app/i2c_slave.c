@@ -2,7 +2,7 @@
 #include "intrinsics.h"
 #include "msp430fr2310.h"
 #include "i2c_slave.h"
-#include "LCD_driver.h"
+#include "LEDarray.h"
 #include <msp430.h>
 
 int start = 0;
@@ -18,7 +18,7 @@ void i2c_slave_init(){
     UCB0CTLW0 = UCSWRST;                    // Software reset enabled
     UCB0CTLW0 |= UCMODE_3 | UCSYNC;         // I2C mode, sync mode
     UCB0CTLW0 &= ~UCMST;                    // Put into slave mode
-    UCB0I2COA0 = 0x40 | UCOAEN;             // Slave address = 0x1101000b
+    UCB0I2COA0 = 0x42 | UCOAEN;             // Slave address = 0x1101000b
 
     UCB0CTLW1 |= UCASTP_2;                  // Enable AutoStop
     UCB0TBCNT = sizeof(Packet);             // Auto Stop when UCB0TBCNT reached
@@ -56,38 +56,34 @@ __interrupt void EUSCI_B0_I2C_ISR(void){
     switch(UCB0IV){
         case 0x16:              // ID 16: RXIFG0 asserts after from slave
             Datum_In = UCB0RXBUF;    //receive data and store in Data_In
-            lcd_send_data(Datum_In);
-            lcd_clear_bottom();
-            lcd_clear_top();
+            // lcd_send_data(Datum_In);
+            ledarray_set_pattern(Datum_In);
             switch(Datum_In){
-                case '0':
-                    lcd_send_string("Static");
-                    break;
                 case '1':
-                    lcd_send_string("Toggle");
+                    ledarray_select_pattern(PATTERN_1_TOGGLE);
                     break;
                 case '2':
-                    lcd_send_string("Up Count");
+                    ledarray_select_pattern(PATTERN_2_UP_COUNT);
                     break;
                 case '3':
-                    lcd_send_string("In Out");
+                    ledarray_select_pattern(PATTERN_3_IN_OUT);
                     break;
                 case '4':
-                    lcd_send_string("Down Count");
+                    ledarray_select_pattern(PATTERN_4_DOWN_COUNT);
                     break;
                 case '5':
-                    lcd_send_string("Rotate Left");
+                    ledarray_select_pattern(PATTERN_5_RLA);
                     break;
                 case '6':
-                    lcd_send_string("Rotate Right");
+                    ledarray_select_pattern(PATTERN_6_RRC);
                     break;
                 case '7':
-                    lcd_send_string("Fill");
+                    ledarray_select_pattern(PATTERN_7_FILL);
                     break;
                 case 'D':
+                    ledarray_select_pattern(PATTERN_NONE);
                     break;
             }
-            if(Datum_In!='D') lcd_set_key_char(Datum_In);
             heartbeat_run();
         case 0x18:              // ID 18: TXIFG0 asserts when register val can be sent
             UCB0TXBUF = 0x03;   // register address

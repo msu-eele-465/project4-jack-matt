@@ -58,9 +58,9 @@ static void init_timer(void) {
 void ledarray_init(void) {
     // Configure LED pins as outputs
     P1DIR |= LED_PINSA;
-    P1OUT |= LED_PINSA;  // All LEDs off initially
+    P1OUT &= ~LED_PINSA;  // All LEDs off initially
     P2DIR |= LED_PINSB;
-    P2OUT |= LED_PINSB;
+    P2OUT &= ~LED_PINSB;
     
     
     init_timer();
@@ -135,8 +135,10 @@ void ledarray_set_pattern(int pattern){
     int led_group_b;
     led_group_a = pattern & LED_PINSA;
     led_group_b = (pattern<<4) & LED_PINSB;
-    P1OUT = led_group_a;
-    P2OUT = led_group_b;
+    P1OUT &= ~ LED_PINSA;
+    P2OUT &= ~ LED_PINSB;
+    P1OUT |= led_group_a;
+    P2OUT |= led_group_b;
 }
 
 void ledarray_update(void) {
@@ -180,7 +182,7 @@ void ledarray_update(void) {
         case PATTERN_6_RRC:
             ledarray_set_pattern(~pattern_step6);
             pattern_step6 = (pattern_step6 >> 1);
-            if (pattern_step6==1)
+            if (pattern_step6==0)
                 pattern_step6 = 128;
             break;
 
@@ -198,8 +200,8 @@ void ledarray_update(void) {
             break;
             
         default:
-            P1OUT |= LED_PINSA;
-            P2OUT |= LED_PINSB;
+            P1OUT &= ~LED_PINSA;
+            P2OUT &= ~LED_PINSB;
             break;
     }
 }
